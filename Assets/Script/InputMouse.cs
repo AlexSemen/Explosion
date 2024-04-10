@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Unity.IO.LowLevel.Unsafe.AsyncReadManagerMetrics;
 
+[RequireComponent(typeof(Camera))]
 public class InputMouse : MonoBehaviour
 {
     [SerializeField] private LayerMask _interactionWithMouse;

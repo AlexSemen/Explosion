@@ -31,38 +31,33 @@ public class CubeDivisible : MonoBehaviour
 
         if(Random.Range(0, _maxChanceDivisible) <= _chanceDivisible) 
         {
-            int divisible = Random.Range(_mixDivisible - 1, _maxDivisible);
+            int divisible = Random.Range(_mixDivisible, _maxDivisible + 1);
 
-            for (int i = 0; i <= divisible; i++)
+            List<Rigidbody> newCubs = new List<Rigidbody>();
+
+            for (int i = 0; i < divisible; i++)
             {
                 CubeDivisible newCub = Instantiate(_prefab, transform.position, Quaternion.identity);
-                newCub.transform.localScale = transform.localScale / _modifierScale;
-                newCub.SetChanceDivisible(_chanceDivisible / _modifierChanceDivisible);
-                newCub.GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
+                newCub.Init(transform.localScale, _chanceDivisible);
+                newCubs.Add(newCub.GetComponent<Rigidbody>());
             }
 
-            Explode();
+            Explode(newCubs);
         }
     }
 
-    public void SetChanceDivisible(int chanceDivisible)
+    public void Init(Vector3 scale, int chanceDivisible)
     {
-        _chanceDivisible = chanceDivisible;
+        transform.localScale = scale / _modifierScale;
+        _chanceDivisible = chanceDivisible / _modifierChanceDivisible;
+        gameObject.GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
     }
 
-    private void Explode()
+    private void Explode(List<Rigidbody> Cubs)
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, _radiusExplode);
-        Rigidbody rigidbody;
-
-        for (int i = 0;i < colliders.Length; i++)
+        foreach(Rigidbody Cub in Cubs)
         {
-            rigidbody = colliders[i].GetComponent<Rigidbody>();
-
-            if(rigidbody != null)
-            {
-                rigidbody.AddExplosionForce(_forceExplode, transform.position, _radiusExplode);
-            }
+            Cub.AddExplosionForce(_forceExplode, transform.position, _radiusExplode);
         }
     }
 }
